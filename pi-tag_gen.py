@@ -3,9 +3,13 @@
 Author: Raul Acuna @ TU Darmstadt
 Email: raultron@gmail.com
 
+Coauthor: Johannes Volz @ IPA Fraunhofer
+Email: Johannes.Volz@ipa.fraunhofer.de
+
 TODO :
-- Convert to PDF
-- Print guiding lines to indicate the crossratios
+- [x] Convert to PDF
+- [] fix placement without A4 command
+- [] generate xml file implemantation
 
 """
 import svgwrite
@@ -28,6 +32,7 @@ def main(argv):
     parser.add_argument("--A4", help="SVG output centered in A4 sheet size",action="store_true")
     parser.add_argument("--pdf", help="Convert final SVG file to pdf",action="store_true")
     parser.add_argument("--show_info", help="Print additional information inside the marker",action="store_true")
+    parser.add_argument("--tool", help="use a template to punch holes for a specialized tool", action="store_true")
 
     #parser.add_argument("--print_debug", help="Print debug information inside the marker",action="store_true")
 
@@ -78,31 +83,67 @@ def main(argv):
     CR_Line1_AB = args.AB1
     CR_Line1_AC = args.AC1
     
-    #center of the marker
-    cx = cy = circle_clearance + circle_radius + marker_size/2
     
-    
-    
-    #Squares for marker size reference
-    size_inner_square = marker_size-circle_radius*2-circle_clearance*2
-    corner_inner_square = 2*circle_radius + 2*circle_clearance
-    size_outer_square = marker_size+circle_radius*2+circle_clearance*2
     
     #We create a group for the whole marker
     
     marker = dwg.defs.add(dwg.g(id='marker'))
     
+    #Squares for marker size reference
+    size_inner_square = marker_size-circle_radius*2-circle_clearance*2
+    size_outer_square = marker_size+circle_radius*2+circle_clearance*2
+
+
+    if args.tool:
+
+        box_size = 20.0
+        dot_radius = 0.6
+        dot_clearance = 0.02
+
+        #center of the marker
+        cx = cy = box_size/2 
+        
+        #Squares for marker size reference
+        size_inner_square = marker_size-circle_radius*2-circle_clearance*2
+        corner_box = dot_clearance
+        corner_outer_square = corner_box + box_size/2 - size_outer_square/2
+        
+        #center of the marker
+        cx = cy = box_size/2 + corner_box
+
+        #tool sqare
+        # marker.add(svgwrite.shapes.Rect((corner_box*cm, corner_box*cm),(box_size*cm,box_size*cm), fill='white', stroke='black'))
+
+        corners = [
+            (corner_box, corner_box),
+            (corner_box, corner_box + box_size),
+            (corner_box + box_size, corner_box),
+            (corner_box + box_size, corner_box + box_size)
+        ]
+        
+        for corner in corners:
+            marker.add(svgwrite.shapes.Circle((corner[0]*cm, corner[1]*cm), dot_radius/2*cm, fill='black'))
+        
+    else:
+
+        #center of the marker
+        cx = cy = circle_clearance + circle_radius + marker_size/2
+
+        corner_outer_square = 0
+
+ 
+    corner_inner_square = corner_outer_square + 2*circle_radius + 2*circle_clearance
+   
+        
     #Outer square
-    marker.add(svgwrite.shapes.Rect((0*cm,0*cm),(size_outer_square*cm,size_outer_square*cm), fill='white', stroke='black'))
+    marker.add(svgwrite.shapes.Rect((corner_outer_square*cm,corner_outer_square*cm),(size_outer_square*cm,size_outer_square*cm), fill='white', stroke='black'))
     
     #inner square
     marker.add(svgwrite.shapes.Rect((corner_inner_square*cm,corner_inner_square*cm),(size_inner_square*cm,size_inner_square*cm), fill='none', stroke='black'))
-    
-    
-    
-    
-    x1 = y1 = circle_radius + circle_clearance
-    x2 = y2 = circle_radius + circle_clearance + marker_size
+
+
+    x1 = y1 = corner_outer_square + circle_radius + circle_clearance
+    x2 = y2 = corner_outer_square + circle_radius + circle_clearance + marker_size
     
     #lets draw the marker corner circles
     top_left_corner = (x1*cm,y1*cm)
@@ -173,12 +214,17 @@ def main(argv):
     marker.add(dwg.line((cx*cm, cy*cm), (cx*cm, (cy-2)*cm), stroke=svgwrite.rgb(10, 10, 16, '%')))
     marker.add(dwg.text('x', insert=((cx+2.1)*cm, (cy)*cm), fill='black'))
     marker.add(dwg.text('y', insert=((cx)*cm, (cy-2.2)*cm), fill='black'))
-    
-        
+
     if args.A4:
-        #center marker in middle of A4 sheet
-        x_m = ((w/2)-(size_outer_square/2))
-        y_m = ((h/2)-(size_outer_square/2))
+        if args.tool:
+             #center marker in middle of A4 sheet
+            x_m = ((w/2)-(box_size/2))
+            y_m = ((h/2)-(box_size/2))
+        else:
+            #center marker in middle of A4 sheet
+            x_m = ((w/2)-(size_outer_square/2))
+            y_m = ((h/2)-(size_outer_square/2))
+        
         u = dwg.use(marker, insert=(x_m*cm,y_m*cm))
     else:
         u = dwg.use(marker, insert=(0*cm,0*cm))
