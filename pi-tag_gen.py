@@ -8,7 +8,7 @@ Email: Johannes.Volz@ipa.fraunhofer.de
 
 TODO :
 - [x] Convert to PDF
-- [] fix placement without A4 command
+- [x] fix placement without A4 command
 - [] generate xml file implemantation
 
 """
@@ -96,29 +96,29 @@ def main(argv):
 
     if args.tool:
 
-        box_size = 20.0
-        dot_radius = 0.6
+        dot_distance = 20.0
+        dot_radius = 0.3
         dot_clearance = 0.02
 
         #center of the marker
-        cx = cy = box_size/2 
+        cx = cy = dot_distance/2 
         
         #Squares for marker size reference
         size_inner_square = marker_size-circle_radius*2-circle_clearance*2
-        corner_box = dot_clearance
-        corner_outer_square = corner_box + box_size/2 - size_outer_square/2
-        
+        corner_outer_square = dot_radius + dot_distance/2 - size_outer_square/2
+        background_size = dot_distance + 2*dot_radius + 2*dot_clearance 
+
         #center of the marker
-        cx = cy = box_size/2 + corner_box
+        cx = cy = dot_distance/2 + dot_radius
 
         #tool sqare
-        # marker.add(svgwrite.shapes.Rect((corner_box*cm, corner_box*cm),(box_size*cm,box_size*cm), fill='white', stroke='black'))
+        marker.add(svgwrite.shapes.Rect((0*cm, 0*cm),(background_size*cm,background_size*cm), fill='white'))
 
         corners = [
-            (corner_box, corner_box),
-            (corner_box, corner_box + box_size),
-            (corner_box + box_size, corner_box),
-            (corner_box + box_size, corner_box + box_size)
+            (dot_radius, dot_radius),
+            (dot_radius, dot_radius + dot_distance),
+            (dot_radius + dot_distance, dot_radius),
+            (dot_radius + dot_distance, dot_radius + dot_distance)
         ]
         
         for corner in corners:
@@ -218,8 +218,8 @@ def main(argv):
     if args.A4:
         if args.tool:
              #center marker in middle of A4 sheet
-            x_m = ((w/2)-(box_size/2))
-            y_m = ((h/2)-(box_size/2))
+            x_m = ((w/2)-(background_size/2))
+            y_m = ((h/2)-(background_size/2))
         else:
             #center marker in middle of A4 sheet
             x_m = ((w/2)-(size_outer_square/2))
