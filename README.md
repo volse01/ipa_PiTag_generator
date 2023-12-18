@@ -11,7 +11,7 @@ SVG stands for Scalable Vector Graphics, this files can be easily edited with op
 
 ### Installation and execution
 
-The script is based on svgwrite and python. The following installation instructions apply for Ubuntu 14.04:
+The script is based on svgwrite and python. The following installation instructions apply for Ubuntu 20.04 with a python version >=3.9:
 
 Install dependencies on a new terminal:
 
@@ -30,7 +30,7 @@ This command will generate a generic marker of 10cm wide with circles of 0.9cm R
 
 Example with all the implemented options:
 
-     python pi-tag_gen.py 0.40 0.60 0.30 0.70 --output_file pitag_marker.svg --A4 --pdf --show_info --marker_size 10.0 --circle_radius 0.9 --circle_clearance 0.2
+     python pi-tag_gen.py 0.40 0.60 0.30 0.70 --output_file pitag_marker.svg --A4 --pdf --show_info --marker_size 10.0 --circle_radius 0.9 --circle_clearance 0.2 --tool --xml
 
 
 ### Positional arguments
@@ -78,3 +78,13 @@ Example with all the implemented options:
 7. **--show_info**
 
  Print additional information inside the marker. Useful when doing tests or comparing markers. Defaults to False.
+ 
+ 8. **--tool**
+ 
+ Print dots to punch holes for a display stand with 20x20 cm hole distances. Defaults to False
+
+ 9. **--xml**
+
+ Creates the fitting `.xml` File, after naming conventions, and asks the user for additional information abut the Pi-Tag. Defaults to False
+
+
