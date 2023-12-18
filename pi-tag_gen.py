@@ -3,13 +3,8 @@
 Author: Raul Acuna @ TU Darmstadt
 Email: raultron@gmail.com
 
-Coauthor: Johannes Volz @ IPA Fraunhofer
+Coauthor: Johannes Volz 4 IPA Fraunhofer
 Email: Johannes.Volz@ipa.fraunhofer.de
-
-TODO :
-- [x] Convert to PDF
-- [x] fix placement without A4 command
-- [] generate xml file implemantation
 
 """
 import svgwrite
@@ -18,6 +13,7 @@ from svgwrite import cm, mm
 import argparse
 import sys
 import cairosvg
+import pi_tag_xml_writer
 
 def main(argv):
     parser = argparse.ArgumentParser()    
@@ -32,7 +28,8 @@ def main(argv):
     parser.add_argument("--A4", help="SVG output centered in A4 sheet size",action="store_true")
     parser.add_argument("--pdf", help="Convert final SVG file to pdf",action="store_true")
     parser.add_argument("--show_info", help="Print additional information inside the marker",action="store_true")
-    parser.add_argument("--tool", help="use a template to punch holes for a specialized tool", action="store_true")
+    parser.add_argument("--tool", help="creates a template to punch holes for a specialized tool", action="store_true")
+    parser.add_argument("--xml", help="creates a .xml file to the fiducial", action="store_true")
 
     #parser.add_argument("--print_debug", help="Print debug information inside the marker",action="store_true")
 
@@ -238,7 +235,8 @@ def main(argv):
     if args.pdf:
         cairosvg.svg2pdf(file_obj=open(file_name+'.svg', "rb"), write_to=file_name+'.pdf')
         
-        
+    if args.xml:    
+        pi_tag_xml_writer.writer(marker_size, args.AB0, args.AC0, args.AB1, args.AC1)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
