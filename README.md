@@ -1,6 +1,9 @@
 # Pi-Tag generator
 Pi-Tag fiducial marker generator.
 
+this repo is developed out of a fork of [raultrons](https://github.com/raultron)s repository [Pi-Tag_generator](https://github.com/raultron/PiTag-generator).
+the code was pushed into a new repo due to extensive changes, especially regarding the automazic `.xml` file generation.
+
 PiTag stands for Projective Invariant Tag, due to the detection algorithm which is based on projective invariants. More information on Pi-Tag can be found on the original [publication](www.dsi.unive.it/~atorsell/papers/Journals/MVA(24-6)2013.pdf). If you want to detect this markers I suggest to use the ROS package [cob_fiducials](http://wiki.ros.org/cob_fiducials).
 
 This script generates Pi-Tag fiducial markers in an SVG file with the following format:
@@ -81,10 +84,10 @@ Example with all the implemented options:
  
  8. **--tool**
  
- Print dots to punch holes for a display stand with 20x20 cm hole distances. Defaults to False
+ prints dots to punch holes for a display stand with 20x20 cm hole distances. defaults to false.
 
  9. **--xml**
 
- Creates the fitting `.xml` File, after naming conventions, and asks the user for additional information abut the Pi-Tag. Defaults to False
+ creates the fitting `.xml` file, after naming conventions, and asks the user for additional information abut the pi-tag. defaults to false.
 
 
