@@ -24,7 +24,7 @@ def writer(marker_size, AB0, AC0, AB1, AC1, called = True):
             break
         else:
             
-            verify = input(f"\nFile with name: '{xml_file_path}' exist, want to add marker into it?")
+            verify = input(f"\nFile with name: '{xml_file_path}' exist, want to add marker into it?[y,N]")
             
             if verify == 'y':
                 tree = et.parse(xml_file_path)
